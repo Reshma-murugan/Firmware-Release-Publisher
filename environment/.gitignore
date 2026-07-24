@@ -19,6 +19,12 @@ distribution-gateway/data/*.db
 # Note: build-time signing keys are generated inside the image, not in this tree,
 # so there is nothing to ignore here.
 
+# Python local environment and caches
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
 # Logs and OS noise
 *.log
 npm-debug.log*

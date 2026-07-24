@@ -22,11 +22,11 @@ node -e "fetch('http://127.0.0.1:7070/v1/signing-key/current').then(r=>r.json())
 echo ""
 echo "=== Step 3: Run publisher directly (first run) ==="
 cd /app
-node publisher/release-publisher.mjs --report | tee /tmp/out_run1.txt
+node solution/publisher/release-publisher.mjs --report | tee /tmp/out_run1.txt
 
 echo ""
 echo "=== Step 4: Run publisher directly (second run — idempotency check) ==="
-node publisher/release-publisher.mjs --report | tee /tmp/out_run2.txt
+node solution/publisher/release-publisher.mjs --report | tee /tmp/out_run2.txt
 
 echo ""
 echo "=== Step 5: Diff run1 vs run2 (must be empty) ==="

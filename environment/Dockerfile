@@ -58,25 +58,28 @@ RUN mkdir -p /app/keys/current /app/keys/revoked \
 # lockfiles ship, so `npm install` is used (npm ci requires a lockfile).
 
 # Root publisher package (declares pinned `duckdb`; ESM).
-COPY package.json /app/package.json
+COPY environment/package.json /app/package.json
 RUN npm install --no-audit --no-fund
 
 # Distribution gateway subproject (pins express@4.19.2; starts with `node server.js`).
-COPY distribution-gateway/package.json /app/distribution-gateway/package.json
+COPY environment/distribution-gateway/package.json /app/distribution-gateway/package.json
 WORKDIR /app/distribution-gateway
 RUN npm install --no-audit --no-fund
 WORKDIR /app
 
 # Remaining gateway sources (server.js, app.js, lib/, etc.).
-COPY distribution-gateway/ /app/distribution-gateway/
+COPY environment/distribution-gateway/ /app/distribution-gateway/
 
-# Publisher sources.
-COPY publisher/ /app/publisher/
+# Empty environment publisher folder for the empty-run proof.
+COPY environment/publisher/ /app/publisher/
+
+# Reference solution package for the graded solution proof.
+COPY solution/ /app/solution/
 
 # Task fixtures.
-COPY fixtures/build_manifest.csv /app/fixtures/build_manifest.csv
-COPY reports/publications.expected.txt /app/reports/publications.expected.txt
-COPY verify.sh /app/verify.sh
+COPY environment/fixtures/build_manifest.csv /app/fixtures/build_manifest.csv
+COPY environment/reports/publications.expected.txt /app/reports/publications.expected.txt
+COPY environment/verify.sh /app/verify.sh
 
 # The verifier launches the gateway in the background and drives it over
 # localhost; there is no CMD that starts it. A default interactive shell suffices.

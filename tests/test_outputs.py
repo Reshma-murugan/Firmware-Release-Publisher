@@ -110,7 +110,7 @@ def run_publisher(clean: bool = False) -> str:
     if clean:
         reset_publisher_state()
     result = subprocess.run(
-        ["npm", "run", "report"],
+        ["npm", "run", "--silent", "report"],
         cwd=REPO_ROOT,
         capture_output=True,
         text=True,

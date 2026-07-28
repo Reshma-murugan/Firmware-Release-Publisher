@@ -7,3 +7,6 @@ node_modules/
 *.duckdb.wal
 *.log
 .DS_Store
+
+# Local verification script (not part of submission)
+final_check.sh

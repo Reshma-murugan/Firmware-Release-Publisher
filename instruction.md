@@ -203,7 +203,13 @@ stored `publication_id`s keep the two runs byte-identical.
 
 ## Success Conditions (Grading Proofs)
 
-Both proofs run in a freshly-built container.
+Both proofs run in a freshly-built container and use the **same** verifier
+command: `cd /tests && bash test.sh` (which runs `pytest` on `test_outputs.py`
+and writes `0` or `1` to `/logs/verifier/reward.txt`). The pytest suite invokes
+`npm run report` — i.e. `node publisher/release-publisher.mjs --report` from
+`/app` — so it always exercises whichever code lives at
+`/app/publisher/release-publisher.mjs`. The two proofs differ only in whether
+that file exists.
 
 ### Proof A — Empty Environment Proof (Baseline Reward 0)
 
@@ -211,24 +217,28 @@ Premise: the environment ships with no candidate code. This sanity-checks that
 the scaffolding correctly fails when no solution is supplied.
 
 ```
-cd /app
-npm run report
+cd /tests && bash test.sh
 ```
-**Expected: non-zero exit → **reward 0**. Natural failure mode is Node's
-`Error: Cannot find module '/app/publisher/release-publisher.mjs'` because
-`/app/publisher/` is empty. If this proof doesn't fail cleanly (reward 0
-baseline), the grader cannot trust that a subsequent reward 1 reflects
-candidate work rather than leaked scaffolding.
+`/app/publisher/` is empty (only `.gitkeep`), so `npm run report` fails with
+`Error: Cannot find module`. Every pytest test fails, `test.sh` writes
+`reward.txt = 0`.
+
+**Expected: reward 0.** If this proof doesn't fail cleanly, the grader cannot
+trust that a subsequent reward 1 reflects candidate work rather than leaked
+scaffolding.
 
 ### Proof B — Solution Proof (Graded Reward 1)
 
-The grader places the reference solution at
-`/app/solution/publisher/release-publisher.mjs` and runs:
+The grader copies the reference solution into the candidate entry point, then
+runs the **same** verifier:
 
 ```
-cd /app
-node /app/solution/publisher/release-publisher.mjs --report
+cp /app/solution/publisher/release-publisher.mjs /app/publisher/release-publisher.mjs
+cd /tests && bash test.sh
 ```
+
+Now `npm run report` succeeds. All pytest tests pass, `test.sh` writes
+`reward.txt = 1`.
 
 All of the following must hold:
 1. **Golden match (masked).** After `s/RECEIPT=\S+/RECEIPT=<mask>/g`, stdout

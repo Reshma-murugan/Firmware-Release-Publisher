@@ -99,13 +99,18 @@ def reset_publisher_state() -> None:
 
 
 def run_publisher(clean: bool = False) -> str:
-    """Run the reference solution. Pass clean=True to blow away releases.duckdb
-    before executing, forcing a fresh sign+submit cycle against the gateway."""
+    """Run the publisher under test via `npm run report`, which expands to
+    `node publisher/release-publisher.mjs --report` from /app.  This is the
+    same command the grader invokes; it exercises whichever code lives at
+    /app/publisher/release-publisher.mjs — NOT a hardcoded solution path.
+
+    Pass clean=True to blow away releases.duckdb before executing, forcing a
+    fresh sign+submit cycle against the gateway."""
     ensure_gateway()
     if clean:
         reset_publisher_state()
     result = subprocess.run(
-        ["node", "/app/solution/publisher/release-publisher.mjs", "--report"],
+        ["npm", "run", "report"],
         cwd=REPO_ROOT,
         capture_output=True,
         text=True,

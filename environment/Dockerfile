@@ -76,10 +76,11 @@ COPY environment/publisher/ /app/publisher/
 # Reference solution package for the graded solution proof.
 COPY solution/ /app/solution/
 
-# Task fixtures.
+# Task fixtures and verifier assets.
 COPY environment/fixtures/build_manifest.csv /app/fixtures/build_manifest.csv
 COPY environment/reports/publications.expected.txt /app/reports/publications.expected.txt
 COPY environment/verify.sh /app/verify.sh
+COPY tests/ /tests/
 
 # The verifier launches the gateway in the background and drives it over
 # localhost; there is no CMD that starts it. A default interactive shell suffices.

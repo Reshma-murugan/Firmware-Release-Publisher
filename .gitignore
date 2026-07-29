@@ -8,5 +8,4 @@ node_modules/
 *.log
 .DS_Store
 
-# Local verification script (not part of submission)
-final_check.sh
+
